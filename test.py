@@ -14,21 +14,26 @@ def compare_resources(list1: Dict[str, List[Dict[str, Any]]],
         resources1 = repo1['InternalResources']
         resources2 = repo2['InternalResources']
 
-        for resource_name, resource_data1 in resources1.items():
-            if resource_name not in resources2:
+        for resource1 in resources1:
+            resource_name = next(iter(resource1))  # Get the key of the dictionary
+            resource_data1 = resource1[resource_name]
+
+            matching_resource2 = next((r for r in resources2 if resource_name in r), None)
+
+            if not matching_resource2:
                 report.append({
                     'RepoName': repo_name,
                     'MissingResource': resource_name,
-                    'MissingFields': list(resource_data1.keys())
+                    'MissingFields': resource_data1
                 })
             else:
-                resource_data2 = resources2[resource_name]
-                missing_fields = [field for field in resource_data1 if field not in resource_data2]
-                if missing_fields:
+                resource_data2 = matching_resource2[resource_name]
+                missing_items = [item for item in resource_data1 if item not in resource_data2]
+                if missing_items:
                     report.append({
                         'RepoName': repo_name,
                         'Resource': resource_name,
-                        'MissingFields': missing_fields
+                        'MissingItems': missing_items
                     })
 
     return report
@@ -46,4 +51,4 @@ def main():
         json.dump(comparison_report, report_file, indent=2)
 
 if __name__ == "__main__":
-    main()s
+    main()
