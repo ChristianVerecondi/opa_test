@@ -10,7 +10,6 @@ def compare_resources(list1: Dict[str, List[Dict[str, Any]]],
     report = []
 
     for repo1, repo2 in zip(list1['data'], list2['data']):
-        repo_name = repo1['RepoName'][0]
         resources1 = repo1['InternalResources']
         resources2 = repo2['InternalResources']
 
@@ -22,7 +21,6 @@ def compare_resources(list1: Dict[str, List[Dict[str, Any]]],
 
             if not matching_resource2:
                 report.append({
-                    'RepoName': repo_name,
                     'MissingResource': resource_name,
                     'MissingFields': resource_data1
                 })
@@ -31,7 +29,6 @@ def compare_resources(list1: Dict[str, List[Dict[str, Any]]],
                 missing_items = [item for item in resource_data1 if item not in resource_data2]
                 if missing_items:
                     report.append({
-                        'RepoName': repo_name,
                         'Resource': resource_name,
                         'MissingItems': missing_items
                     })
